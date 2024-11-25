@@ -163,7 +163,16 @@ def get_anime_urls():
 
 
 def convert_files(anime, season, episode, index):
-    os.system(f"curl '{episode}' -o '{SAVE_DIR}/{anime}/{season}/ep{index+1}.mp4' -#")
+    print(f"Downloading {anime} {season} episode {index+1}")
+    with open(f"{SAVE_DIR}/{anime}/{season}/{index+1}.mp4", 'wb') as f:
+        c = pycurl.Curl()
+        c.setopt(c.URL, episode)
+        c.setopt(c.WRITEDATA, f)
+        c.setopt(c.NOPROGRESS, False)
+        c.setopt(c.XFERINFOFUNCTION, lambda dl_total, dl_now, _, _: print(f"\rDownloading: {dl_now*100/dl_total} %", end=""))
+        c.setopt(c.VERBOSE, False)
+        c.perform()
+        c.close()
 
 
 def main():
