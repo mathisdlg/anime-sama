@@ -3,6 +3,7 @@ import os, requests, time, re, pycurl
 from sibnet import get_location_from_embed
 from const import PARSER, SITE, SEARCH_QUERY_BASE, SAVE_DIR
 
+
 def check_availability(series):
     return requests.get(f"https://{SITE}/{SEARCH_QUERY_BASE}/{series}").status_code == 200
 
@@ -78,7 +79,7 @@ def convert_files(anime, season, episode, index):
         c.setopt(c.URL, episode)
         c.setopt(c.WRITEDATA, f)
         c.setopt(c.NOPROGRESS, False)
-        c.setopt(c.XFERINFOFUNCTION, lambda dl_total, dl_now, *args: print(f"\rDownloading: {round(dl_now*100/dl_total, 2) if dl_total != 0 else "..."} %", end=""))
+        c.setopt(c.XFERINFOFUNCTION, lambda dl_total, dl_now, *_: print(f"\rDownloading: {round(dl_now*100/dl_total, 2) if dl_total != 0 else "..."} %", end=""))
         c.setopt(c.VERBOSE, False)
         c.perform()
         c.close()
