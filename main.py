@@ -85,8 +85,30 @@ def convert_files(anime, season, episode, index):
         c.close()
 
 
+def get_all_anime():
+    resp = requests.get("https://anime-sama.fr/catalogue/listing_all.php")
+    resp = resp.text.lower()
+    soup = BeautifulSoup(resp, PARSER)
+
+    index = {}
+    alias_index = {}
+    anime = soup.find_all("div", {"class": ["anime", "anime,"]})
+    for a in anime:
+        real_title = a.find("h1").text
+        index[real_title] = {
+            "link": a.find("a")["href"],
+            "img": a.find("img")["src"],
+            "tag": [tag.replace(",", "") for tag in a["class"]]
+        }
+        for alias in a.find("p").text.split(", "):
+            alias_index[alias] = real_title
+        alias_index[real_title.strip()] = real_title
+
+    return index, alias_index
+
+
 def main():
-    print("Hello world! What anime do you want to convert?")
+    print("What anime do you want to convert?")
     list_anime_url = get_anime_urls()
     print(list_anime_url)
 
@@ -102,4 +124,7 @@ def main():
 
 if __name__ == "__main__":
     # anime-sama.fr/catalogue/listing_all.php
-    main()
+    print("Please wait while we fetch the anime list...")
+    index, alias = get_all_anime()
+    print("Done!")
+    main(index, alias)
