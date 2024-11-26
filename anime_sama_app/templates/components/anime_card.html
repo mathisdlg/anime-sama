@@ -1,0 +1,20 @@
+<div class="col">
+    <div class="card">
+        <img src="{{ values.img }}" class="card-img-top" alt="{{ title }} image">
+        <div class="card-body">
+            <a href="{{ values.link }}" target="_blank" class="text-decoration-none">
+                <h5 class="card-title">
+                    {{ title }}
+                </h5>
+            </a>
+            <p class="card-text">
+                {% for tag in values.tags %}
+                    <span class="badge bg-primary">{{ tag }}</span>
+                {% endfor %}
+            </p>
+        </div>
+        <a class="btn btn-primary" href="{{ values.slug }}">
+            See details
+        </a>
+    </div>
+</div>

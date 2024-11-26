@@ -5,6 +5,7 @@ let
         beautifulsoup4
         pycurl
         django
+        django-bootstrap5
     ];
 in pkgs.mkShellNoCC {
     name = "MassDL";

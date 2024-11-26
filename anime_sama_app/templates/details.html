@@ -1,0 +1,36 @@
+{% extends 'components/base.html' %}
+
+{% block content %}
+    <img src="{{ info.img }}" alt="{{ info.title }}" class="image">
+    <h1 class="title">{{ info.title }}</h1>
+    
+    {% if info.tags %}
+        <p class="info fst-italic">Type: {{ info.tags }}</p>
+    {% endif %}
+    
+    {% if info.alts %}
+        <p class="info fst-italic fw-light">
+            Alternative Titles: {{ info.alts }}
+        </p>
+    {% endif %}
+
+    <p class="description">{{ info.synopsis }}</p>
+
+    {% for season in seasons %}
+        <div class="d-flex p-2 flex-column">
+            <div class="d-flex p-2 justify-content-between">
+                <h3 class="season-title">{{ season }}</h3>
+                <button class="btn btn-primary">Add to list</button>
+            </div>
+            <div class="season">
+                {% for episode in season.episodes %}
+                    <div class="episode">
+                        <h4 class="episode-title">{{ episode.title }}</h4>
+                        <p class="episode-description">{{ episode.description }}</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+
+{% endblock %}
