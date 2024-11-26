@@ -1,6 +1,6 @@
 import requests, re
 from bs4 import BeautifulSoup
-from const import PARSER
+from anime_sama_app.converter.const import PARSER
 
 def correct(url):
     return url if url.startswith('https:') else f"https:{url}"

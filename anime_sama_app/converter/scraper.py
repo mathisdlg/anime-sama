@@ -1,10 +1,10 @@
 from bs4 import BeautifulSoup
 import os, requests, time, re, pycurl
-from sibnet import get_location_from_embed
-from const import PARSER, SITE, SEARCH_QUERY_BASE, SAVE_DIR
+from anime_sama_app.converter.sibnet import get_location_from_embed
+from anime_sama_app.converter.const import PARSER, SITE, SEARCH_QUERY_BASE, SAVE_DIR
 
 
-def check_availability(series):
+def available(series):
     return requests.get(f"https://{SITE}/{SEARCH_QUERY_BASE}/{series}").status_code == 200
 
 
@@ -41,7 +41,7 @@ def get_anime_urls():
         anime = input("Enter the anime name [e - exit]: ")
         if anime == "e":
             break
-        elif check_availability(anime):
+        elif available(anime):
             seasons = get_seasons_link(anime)
             if seasons == []:
                 print("No seasons found for this anime")
@@ -58,13 +58,13 @@ def get_anime_urls():
             urls[anime] = {}
             for s in seasons:
                 season_vf = f"{s.split('/')[0]}/vf"
-                if check_availability(f"{anime}/{season_vf}"):
+                if available(f"{anime}/{season_vf}"):
                     vf_ep = get_ep_file(anime, season_vf)
                     urls[anime][season_vf] = [get_location_from_embed(ep) for ep in vf_ep]
                 else:
                     print("Season not available in VF")
                     if input("Do you want to download it in vostfr? [Y/n]").lower() != "n":
-                        if check_availability(f"{anime}/{s}"):
+                        if available(f"{anime}/{s}"):
                             vostfr_ep = get_ep_file(anime, s)
                             urls[anime][season_vostfr] = [get_location_from_embed(ep) for ep in vostfr_ep]
         else:
@@ -95,16 +95,38 @@ def get_all_anime():
     anime = soup.find_all("div", {"class": ["anime", "anime,"]})
     for a in anime:
         real_title = a.find("h1").text
+        link = a.find("a")["href"]
         index[real_title] = {
-            "link": a.find("a")["href"],
+            "link": link,
             "img": a.find("img")["src"],
-            "tag": [tag.replace(",", "") for tag in a["class"]]
+            "tags": [ tag.replace(",", "") for tag in a["class"] if "cardlistanime" not in tag and tag != "-" ],
+            "slug": link.split("/")[-1] if not link.endswith("/") else link.split("/")[-2]
         }
         for alias in a.find("p").text.split(", "):
             alias_index[alias] = real_title
         alias_index[real_title.strip()] = real_title
 
     return index, alias_index
+
+
+def get_info(anime):
+    resp = requests.get(f"https://{SITE}/{SEARCH_QUERY_BASE}/{anime}")
+    soup = BeautifulSoup(resp.text, PARSER)
+
+    info = {}
+    info["title"] = soup.find(id="titreOeuvre").text
+    info["img"] = soup.find(id="coverOeuvre")["src"]
+    info["alts"] = soup.find(id="titreAlter").text
+    for title2 in soup.findAll('h2'):
+        if title2.text.lower() == "synopsis":
+            info["synopsis"] = title2.find_next("p").text
+            break
+    for title2 in soup.findAll('h2'):
+        if title2.text.lower() == "genres":
+            info["tags"] = title2.find_next("a").text
+            break
+    
+    return info
 
 
 def main():
@@ -126,5 +148,6 @@ if __name__ == "__main__":
     # anime-sama.fr/catalogue/listing_all.php
     print("Please wait while we fetch the anime list...")
     index, alias = get_all_anime()
+    alias["snk"]
     print("Done!")
     main(index, alias)
