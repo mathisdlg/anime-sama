@@ -1,7 +1,7 @@
 {% extends 'components/base.html' %}
 
 {% block content %}
-    <img src="{{ info.img }}" alt="{{ info.title }}" class="image">
+    <img src="{{ info.img }}" alt="{{ info.title }}" class="image" width="100%">
     <h1 class="title">{{ info.title }}</h1>
     
     {% if info.tags %}
