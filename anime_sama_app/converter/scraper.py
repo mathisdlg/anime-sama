@@ -79,7 +79,7 @@ def convert_files(anime, season, episode, index):
         c.setopt(c.URL, episode)
         c.setopt(c.WRITEDATA, f)
         c.setopt(c.NOPROGRESS, False)
-        c.setopt(c.XFERINFOFUNCTION, lambda dl_total, dl_now, *_: print(f"\rDownloading: {round(dl_now*100/dl_total, 2) if dl_total != 0 else "..."} %", end=""))
+        c.setopt(c.XFERINFOFUNCTION, lambda dl_total, dl_now, *_: print(f"\rDownloading: {round(dl_now*100/dl_total, 2) if dl_total != 0 else '...'} %", end=""))
         c.setopt(c.VERBOSE, False)
         c.perform()
         c.close()
