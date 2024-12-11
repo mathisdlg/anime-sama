@@ -148,6 +148,5 @@ if __name__ == "__main__":
     # anime-sama.fr/catalogue/listing_all.php
     print("Please wait while we fetch the anime list...")
     index, alias = get_all_anime()
-    alias["snk"]
     print("Done!")
     main(index, alias)
