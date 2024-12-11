@@ -1,0 +1,16 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - RUN_MODE=${RUN_MODE:-WEB} # Default to WEB mode if RUN_MODE is not set
+    ports:
+      - "8000:8000"
+    volumes:
+      - app_data:/app
+    stdin_open: true
+    tty: true # Allows interactive terminal for TUI mode
+
+volumes:
+  app_data:
