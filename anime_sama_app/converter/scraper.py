@@ -134,14 +134,14 @@ def main(index, alias):
     list_anime_url = get_anime_urls()
     print(list_anime_url)
 
-    start_time = time.time()
+    chrono = time.time()
     for anime in list_anime_url:
         for season in list_anime_url[anime]:
             os.makedirs(f"{SAVE_DIR}/{anime}/{season}", exist_ok=True)
             for index, episode in enumerate(list_anime_url[anime][season]):
                 convert_files(anime, season, episode, index)
 
-    print(f"Convert time: {time.time() - start_time}")
+    print(f"Convert time: {time.time() - chrono}")
 
 
 if __name__ == "__main__":
