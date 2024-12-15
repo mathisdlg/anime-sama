@@ -129,19 +129,19 @@ def get_info(anime):
     return info
 
 
-def main():
+def main(index, alias):
     print("What anime do you want to convert?")
     list_anime_url = get_anime_urls()
     print(list_anime_url)
 
-    chrono = time.time()
+    start_time = time.time()
     for anime in list_anime_url:
         for season in list_anime_url[anime]:
             os.makedirs(f"{SAVE_DIR}/{anime}/{season}", exist_ok=True)
             for index, episode in enumerate(list_anime_url[anime][season]):
                 convert_files(anime, season, episode, index)
 
-    print(f"Convert time: {time.time() - chrono}")
+    print(f"Convert time: {time.time() - start_time}")
 
 
 if __name__ == "__main__":
